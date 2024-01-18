@@ -31,7 +31,7 @@ const anmeldungenController = {
     create: async (req, res) => {
         try {
             const { vorname, nachname, anzahlPersonen, menuAuswahl } = req.body;
-            const sql = "INSERT INTO posts (vorname, nachname, anzahlPersonen, menuAuswahl) VALUES (?, ?, ?, ?)";
+            const sql = "INSERT INTO anmeldungen (vorname, nachname, anzahlPersonen, menuAuswahl) VALUES (?, ?, ?, ?)";
             const [rows, fields] = await pool.query(sql, [vorname, nachname, anzahlPersonen, menuAuswahl]);
             res.json({
                 data: rows
@@ -47,7 +47,7 @@ const anmeldungenController = {
         try {
             const { vorname, nachname, anzahlPersonen, menuAuswahl } = req.body;
             const { id } = req.params;
-            const sql = "UPDATE posts SET vorname = ?, nachname = ?, anzahlPersonen = ?, menuAuswahl = ? WHERE id = ?";
+            const sql = "UPDATE anmeldungen SET vorname = ?, nachname = ?, anzahlPersonen = ?, menuAuswahl = ? WHERE id = ?";
             const [rows, fields] = await pool.query(sql, [vorname, nachname, anzahlPersonen, menuAuswahl, id]);
             res.json({
                 data: rows
