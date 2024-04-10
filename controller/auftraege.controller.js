@@ -32,7 +32,7 @@ const auftraegeController = {
 
     create: async (req, res) => {
         try {
-            const { kundenId } = req.params;
+            const { kundenId } = req.body; // Ändern Sie dies zu req.body
             const {
                 auftragsTyp,
                 auftragsBeschreibung
@@ -50,7 +50,7 @@ const auftraegeController = {
             `;
 
             const values = [
-                kundenId,
+                kundenId, // Ändern Sie dies zu req.body.kundenId
                 auftragsNummer,
                 auftragsTyp,
                 auftragsBeschreibung
