@@ -14,6 +14,7 @@ const auftraegeController = {
             });
         }
     },
+
     getById: async (req, res) => {
         try {
             const { id } = req.params;
@@ -28,10 +29,11 @@ const auftraegeController = {
             });
         }
     },
+
     create: async (req, res) => {
         try {
+            const { kundenId } = req.params;
             const {
-                kundenId,
                 auftragsTyp,
                 auftragsBeschreibung
             } = req.body;
@@ -69,6 +71,7 @@ const auftraegeController = {
             });
         }
     },
+
     update: async (req, res) => {
         try {
             const {
@@ -107,6 +110,7 @@ const auftraegeController = {
             });
         }
     },
+
     delete: async (req, res) => {
         try {
             const { id } = req.params;
