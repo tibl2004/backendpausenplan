@@ -10,10 +10,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 const kundenRouter = require('./routes/kunden.router');
-const trauungenRouter = require('./routes/trauungen.router');
+const auftraegeRouter = require('./routes/auftraege.router');
 const authRouter = require('./routes/auth.router');
 
 app.use("/api/v1/kunden", kundenRouter);
+app.use("/api/v1/auftraege", auftraegeRouter);
 app.use("/api/v1/auth", authRouter);
 
 const PORT = process.env.PORT || 5000;
