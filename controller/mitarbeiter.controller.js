@@ -1,9 +1,9 @@
 const pool = require("../database/index");
 
-const kundenController = {
+const mitarbeiterController = {
     getAll: async (req, res) => {
         try {
-            const [rows, fields] = await pool.query("SELECT * FROM kunden");
+            const [rows, fields] = await pool.query("SELECT * FROM mitarbeiter");
             res.json({
                 data: rows
             });
@@ -17,7 +17,7 @@ const kundenController = {
     getById: async (req, res) => {
         try {
             const { id } = req.params;
-            const [rows, fields] = await pool.query("SELECT * FROM kunden WHERE id = ?", [id]);
+            const [rows, fields] = await pool.query("SELECT * FROM mitarbeiter WHERE id = ?", [id]);
             res.json({
                 data: rows
             });
@@ -31,45 +31,51 @@ const kundenController = {
     create: async (req, res) => {
         try {
             const {
+                geschlecht,
                 vorname,
                 nachname,
-                strasseHausnummer,
+                adresse,
                 postleitzahl,
                 ort,
                 email,
-                telefon,
                 mobil,
-                geschlecht
+                benutzername,
+                passwort,
+                iban
             } = req.body;
 
-            const kundennummer = generateRandomKundennummer();
+            const mitarbeiternummer = generateRandomMitarbeiternummer();
 
             const sql = `
-                INSERT INTO kunden (
-                    kundennummer,
-                    vorname, 
-                    nachname, 
-                    strasseHausnummer, 
-                    postleitzahl, 
-                    ort, 
-                    email, 
-                    telefon, 
-                    mobil, 
-                    geschlecht
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO mitarbeiter (
+                    mitarbeiternummer,
+                    geschlecht,
+                    vorname,
+                    nachname,
+                    adresse,
+                    postleitzahl,
+                    ort,
+                    email,
+                    mobil,
+                    benutzername,
+                    passwort,
+                    iban
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `;
 
             const values = [
-                kundennummer,
+                mitarbeiternummer,
+                geschlecht,
                 vorname,
                 nachname,
-                strasseHausnummer,
+                adresse,
                 postleitzahl,
                 ort,
                 email,
-                telefon,
                 mobil,
-                geschlecht
+                benutzername,
+                passwort,
+                iban
             ];
 
             const [result] = await pool.query(sql, values);
@@ -77,7 +83,7 @@ const kundenController = {
             res.json({
                 data: {
                     id: result.insertId,
-                    kundennummer: kundennummer
+                    mitarbeiternummer: mitarbeiternummer
                 }
             });
         } catch (error) {
@@ -90,51 +96,51 @@ const kundenController = {
     update: async (req, res) => {
         try {
             const {
+                geschlecht,
                 vorname,
                 nachname,
-                strasseHausnummer,
+                adresse,
                 postleitzahl,
                 ort,
                 email,
-                telefon,
                 mobil,
-                geschlecht,
-                auftragsTyp,
-                auftragsBeschreibung
+                benutzername,
+                passwort,
+                iban
             } = req.body;
 
             const { id } = req.params;
 
             const sql = `
-                UPDATE kunden 
+                UPDATE mitarbeiter 
                 SET 
+                    geschlecht = ?, 
                     vorname = ?, 
                     nachname = ?, 
-                    strasseHausnummer = ?, 
+                    adresse = ?, 
                     postleitzahl = ?, 
                     ort = ?, 
                     email = ?, 
-                    telefon = ?, 
                     mobil = ?, 
-                    geschlecht = ?, 
-                    auftragsTyp = ?, 
-                    auftragsBeschreibung = ? 
+                    benutzername = ?, 
+                    passwort = ?, 
+                    iban = ?
                 WHERE 
                     id = ?
             `;
 
             const values = [
+                geschlecht,
                 vorname,
                 nachname,
-                strasseHausnummer,
+                adresse,
                 postleitzahl,
                 ort,
                 email,
-                telefon,
                 mobil,
-                geschlecht,
-                auftragsTyp,
-                auftragsBeschreibung,
+                benutzername,
+                passwort,
+                iban,
                 id
             ];
 
@@ -155,7 +161,7 @@ const kundenController = {
     delete: async (req, res) => {
         try {
             const { id } = req.params;
-            const [rows, fields] = await pool.query("DELETE FROM kunden WHERE id = ?", [id]);
+            const [rows, fields] = await pool.query("DELETE FROM mitarbeiter WHERE id = ?", [id]);
             res.json({
                 data: rows
             });
@@ -168,9 +174,9 @@ const kundenController = {
     }
 };
 
-// Funktion zur Generierung einer zufälligen Kundennummer
-function generateRandomKundennummer() {
+// Funktion zur Generierung einer zufälligen Mitarbeiter-Nummer
+function generateRandomMitarbeiternummer() {
     return Math.floor(Math.random() * 1000000) + 1;
 }
 
-module.exports = kundenController;
+module.exports = mitarbeiterController;
