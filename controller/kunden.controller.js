@@ -3,7 +3,7 @@ const pool = require("../database/index");
 const kundenController = {
     getAll: async (req, res) => {
         try {
-            const [rows, fields] = await pool.query("SELECT * FROM kunden");
+            const [rows, fields] = await pool.query("SELECT *, arbeitszeit FROM kunden");
             res.json({
                 data: rows
             });
@@ -17,7 +17,7 @@ const kundenController = {
     getById: async (req, res) => {
         try {
             const { id } = req.params;
-            const [rows, fields] = await pool.query("SELECT * FROM kunden WHERE id = ?", [id]);
+            const [rows, fields] = await pool.query("SELECT *, arbeitszeit FROM kunden WHERE id = ?", [id]);
             res.json({
                 data: rows
             });
@@ -41,7 +41,8 @@ const kundenController = {
                 mobil,
                 geschlecht,
                 auftragsTyp,
-                auftragsBeschreibung
+                auftragsBeschreibung,
+                arbeitszeit // Neu hinzugefügt: Arbeitszeit aus dem Request Body
             } = req.body;
 
             const kundennummer = generateRandomKundennummer();
@@ -59,8 +60,9 @@ const kundenController = {
                     mobil, 
                     geschlecht,
                     auftragsTyp,
-                    auftragsBeschreibung
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    auftragsBeschreibung,
+                    arbeitszeit // Neu hinzugefügt: Arbeitszeit in die Spaltenliste aufnehmen
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `;
 
             const values = [
@@ -75,7 +77,8 @@ const kundenController = {
                 mobil,
                 geschlecht,
                 auftragsTyp,
-                auftragsBeschreibung
+                auftragsBeschreibung,
+                JSON.stringify(arbeitszeit) // Neu hinzugefügt: Arbeitszeit in JSON-Format konvertieren und in die Werte aufnehmen
             ];
 
             const [result] = await pool.query(sql, values);
@@ -106,7 +109,8 @@ const kundenController = {
                 mobil,
                 geschlecht,
                 auftragsTyp,
-                auftragsBeschreibung
+                auftragsBeschreibung,
+                arbeitszeit // Neu hinzugefügt: Arbeitszeit aus dem Request Body
             } = req.body;
 
             const { id } = req.params;
@@ -124,7 +128,8 @@ const kundenController = {
                     mobil = ?, 
                     geschlecht = ?, 
                     auftragsTyp = ?, 
-                    auftragsBeschreibung = ? 
+                    auftragsBeschreibung = ?,
+                    arbeitszeit = ? // Neu hinzugefügt: Arbeitszeit in die Update-Anweisung aufnehmen
                 WHERE 
                     id = ?
             `;
@@ -141,6 +146,7 @@ const kundenController = {
                 geschlecht,
                 auftragsTyp,
                 auftragsBeschreibung,
+                JSON.stringify(arbeitszeit), // Neu hinzugefügt: Arbeitszeit in JSON-Format konvertieren und in die Werte aufnehmen
                 id
             ];
 
