@@ -39,7 +39,9 @@ const kundenController = {
                 email,
                 telefon,
                 mobil,
-                geschlecht
+                geschlecht,
+                auftragsTyp,
+                auftragsBeschreibung
             } = req.body;
 
             const kundennummer = generateRandomKundennummer();
@@ -55,8 +57,10 @@ const kundenController = {
                     email, 
                     telefon, 
                     mobil, 
-                    geschlecht
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    geschlecht,
+                    auftragsTyp,
+                    auftragsBeschreibung
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `;
 
             const values = [
@@ -69,7 +73,9 @@ const kundenController = {
                 email,
                 telefon,
                 mobil,
-                geschlecht
+                geschlecht,
+                auftragsTyp,
+                auftragsBeschreibung
             ];
 
             const [result] = await pool.query(sql, values);
