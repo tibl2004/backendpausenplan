@@ -42,7 +42,13 @@ const kundenController = {
                 geschlecht,
                 auftragsTyp,
                 auftragsBeschreibung,
-                arbeitszeit // Neu hinzugefügt: Arbeitszeit aus dem Request Body
+                arbeitszeit, // Neu hinzugefügt: Arbeitszeit aus dem Request Body
+                budget, // Neu hinzugefügt: Budget aus dem Request Body
+                zweck,
+                speicherkapazität,
+                ram,
+                kühlung,
+                gehäuse
             } = req.body;
 
             const kundennummer = generateRandomKundennummer();
@@ -61,8 +67,14 @@ const kundenController = {
                     geschlecht,
                     auftragsTyp,
                     auftragsBeschreibung,
-                    arbeitszeit // Neu hinzugefügt: Arbeitszeit in die Spaltenliste aufnehmen
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    arbeitszeit,
+                    budget,
+                    zweck,
+                    speicherkapazität,
+                    ram,
+                    kühlung,
+                    gehäuse
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `;
 
             const values = [
@@ -77,8 +89,14 @@ const kundenController = {
                 mobil,
                 geschlecht,
                 auftragsTyp,
-                auftragsBeschreibung,
-                JSON.stringify(arbeitszeit) // Neu hinzugefügt: Arbeitszeit in JSON-Format konvertieren und in die Werte aufnehmen
+                JSON.stringify(auftragsBeschreibung),
+                JSON.stringify(arbeitszeit),
+                budget,
+                zweck,
+                speicherkapazität,
+                ram,
+                kühlung,
+                gehäuse
             ];
 
             const [result] = await pool.query(sql, values);
@@ -110,7 +128,13 @@ const kundenController = {
                 geschlecht,
                 auftragsTyp,
                 auftragsBeschreibung,
-                arbeitszeit // Neu hinzugefügt: Arbeitszeit aus dem Request Body
+                arbeitszeit, // Neu hinzugefügt: Arbeitszeit aus dem Request Body
+                budget, // Neu hinzugefügt: Budget aus dem Request Body
+                zweck,
+                speicherkapazität,
+                ram,
+                kühlung,
+                gehäuse
             } = req.body;
 
             const { id } = req.params;
@@ -129,7 +153,13 @@ const kundenController = {
                     geschlecht = ?, 
                     auftragsTyp = ?, 
                     auftragsBeschreibung = ?,
-                    arbeitszeit = ? // Neu hinzugefügt: Arbeitszeit in die Update-Anweisung aufnehmen
+                    arbeitszeit = ?,
+                    budget = ?,
+                    zweck = ?,
+                    speicherkapazität = ?,
+                    ram = ?,
+                    kühlung = ?,
+                    gehäuse = ?
                 WHERE 
                     id = ?
             `;
@@ -145,8 +175,14 @@ const kundenController = {
                 mobil,
                 geschlecht,
                 auftragsTyp,
-                auftragsBeschreibung,
-                JSON.stringify(arbeitszeit), // Neu hinzugefügt: Arbeitszeit in JSON-Format konvertieren und in die Werte aufnehmen
+                JSON.stringify(auftragsBeschreibung),
+                JSON.stringify(arbeitszeit),
+                budget,
+                zweck,
+                speicherkapazität,
+                ram,
+                kühlung,
+                gehäuse,
                 id
             ];
 
