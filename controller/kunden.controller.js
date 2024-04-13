@@ -42,8 +42,8 @@ const kundenController = {
                 geschlecht,
                 auftragsTyp,
                 auftragsBeschreibung,
-                arbeitszeit, // Neu hinzugefügt: Arbeitszeit aus dem Request Body
-                budget, // Neu hinzugefügt: Budget aus dem Request Body
+                arbeitszeit,
+                budget,
                 zweck,
                 speicherkapazität,
                 ram,
@@ -99,19 +99,12 @@ const kundenController = {
                 gehäuse
             ];
 
-            const [result] = await pool.query(sql, values);
+            await pool.query(sql, values);
 
-            res.json({
-                data: {
-                    id: result.insertId,
-                    kundennummer: kundennummer
-                }
-            });
+            res.status(201).json({ message: "Kunde erfolgreich erstellt." });
         } catch (error) {
-            console.error(error);
-            res.json({
-                status: "error"
-            });
+            console.error("Fehler beim Erstellen des Kunden:", error);
+            res.status(500).json({ error: "Fehler beim Erstellen des Kunden." });
         }
     },
     update: async (req, res) => {
