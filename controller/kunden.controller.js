@@ -53,8 +53,11 @@ const kundenController = {
                 rechnungBezahlt
             } = req.body;
 
-            
             const kundennummer = generateRandomKundennummer();
+
+            // Umwandlung der JSON-Daten in Text
+            const auftragsBeschreibungText = JSON.stringify(auftragsBeschreibung);
+            const arbeitszeitText = JSON.stringify(arbeitszeit);
 
             const sql = `
                 INSERT INTO kunden (
@@ -79,7 +82,7 @@ const kundenController = {
                     gehäuse,
                     rechnungGestellt,
                     rechnungBezahlt
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `;
 
             const values = [
@@ -94,8 +97,8 @@ const kundenController = {
                 mobil,
                 geschlecht,
                 auftragsTyp,
-                JSON.stringify(auftragsBeschreibung),
-                JSON.stringify(arbeitszeit),
+                auftragsBeschreibungText, // Hier wird der umgewandelte Text verwendet
+                arbeitszeitText, // Hier wird der umgewandelte Text verwendet
                 budget,
                 zweck,
                 speicherkapazität,
