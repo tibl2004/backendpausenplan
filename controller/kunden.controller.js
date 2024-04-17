@@ -48,9 +48,12 @@ const kundenController = {
                 speicherkapazität,
                 ram,
                 kühlung,
-                gehäuse
+                gehäuse,
+                rechnungGestellt,
+                rechnungBezahlt
             } = req.body;
 
+            
             const kundennummer = generateRandomKundennummer();
 
             const sql = `
@@ -73,8 +76,10 @@ const kundenController = {
                     speicherkapazität,
                     ram,
                     kühlung,
-                    gehäuse
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    gehäuse,
+                    rechnungGestellt,
+                    rechnungBezahlt
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `;
 
             const values = [
@@ -96,7 +101,9 @@ const kundenController = {
                 speicherkapazität,
                 ram,
                 kühlung,
-                gehäuse
+                gehäuse,
+                rechnungGestellt,
+                rechnungBezahlt
             ];
 
             await pool.query(sql, values);
@@ -127,7 +134,9 @@ const kundenController = {
                 speicherkapazität,
                 ram,
                 kühlung,
-                gehäuse
+                gehäuse,
+                rechnungGestellt,
+                rechnungBezahlt
             } = req.body;
 
             const { id } = req.params;
@@ -152,7 +161,9 @@ const kundenController = {
                     speicherkapazität = ?,
                     ram = ?,
                     kühlung = ?,
-                    gehäuse = ?
+                    gehäuse = ?,
+                    rechnungGestellt = ?,
+                    rechnungBezahlt = ?
                 WHERE 
                     id = ?
             `;
@@ -176,6 +187,8 @@ const kundenController = {
                 ram,
                 kühlung,
                 gehäuse,
+                rechnungGestellt,
+                rechnungBezahlt,
                 id
             ];
 
