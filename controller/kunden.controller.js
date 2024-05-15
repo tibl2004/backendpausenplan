@@ -1,3 +1,4 @@
+const nodemailer = require('nodemailer');
 const pool = require("../database/index");
 
 const kundenController = {
@@ -111,6 +112,9 @@ const kundenController = {
 
             await pool.query(sql, values);
 
+            // Senden der E-Mail
+            await sendEmail(vorname, nachname, email, auftragsBeschreibung, arbeitszeit);
+
             res.status(201).json({ message: "Kunde erfolgreich erstellt." });
         } catch (error) {
             console.error("Fehler beim Erstellen des Kunden:", error);
@@ -131,8 +135,8 @@ const kundenController = {
                 geschlecht,
                 auftragsTyp,
                 auftragsBeschreibung,
-                arbeitszeit, // Neu hinzugefügt: Arbeitszeit aus dem Request Body
-                budget, // Neu hinzugefügt: Budget aus dem Request Body
+                arbeitszeit,
+                budget,
                 zweck,
                 speicherkapazität,
                 ram,
@@ -195,7 +199,7 @@ const kundenController = {
                 id
             ];
 
-            const [result] = await pool.query(sql, values);
+            await pool.query(sql, values);
 
             res.json({
                 status: "success",
@@ -212,14 +216,16 @@ const kundenController = {
     delete: async (req, res) => {
         try {
             const { id } = req.params;
-            const [rows, fields] = await pool.query("DELETE FROM kunden WHERE id = ?", [id]);
+            await pool.query("DELETE FROM kunden WHERE id = ?", [id]);
             res.json({
-                data: rows
+                status: "success",
+                message: "Eintrag erfolgreich gelöscht"
             });
         } catch (error) {
             console.error(error);
             res.json({
-                status: "error"
+                status: "error",
+                message: "Eintrag konnte nicht gelöscht werden"
             });
         }
     }
@@ -228,6 +234,35 @@ const kundenController = {
 // Funktion zur Generierung einer zufälligen Kundennummer
 function generateRandomKundennummer() {
     return Math.floor(Math.random() * 1000000) + 1;
+}
+
+async function sendEmail(vorname, nachname, email, auftragsBeschreibung, arbeitszeit) {
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'tbs.digital.solutions@gmail.com', // Ihre E-Mail-Adresse hier
+            pass: 'your-email-password' // Ihr E-Mail-Passwort hier
+        }
+    });
+
+    const mailOptions = {
+        from: 'service@tb-innovations.com',
+        to: 'tbs.digital.solutions@gmail.com',
+        subject: 'Neue Anfrage von Ihrem Kontaktformular',
+        text: `
+            Vorname: ${vorname}\n
+            Nachname: ${nachname}\n
+            Email: ${email}\n
+            Auftragsbeschreibung: ${auftragsBeschreibung}\n
+            Arbeitszeit: ${arbeitszeit}
+        `
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+    } catch (error) {
+        console.error('Fehler beim Senden der E-Mail:', error);
+    }
 }
 
 module.exports = kundenController;
