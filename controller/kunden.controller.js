@@ -2,33 +2,8 @@ const nodemailer = require('nodemailer');
 const pool = require("../database/index");
 
 const kundenController = {
-    getAll: async (req, res) => {
-        try {
-            const [rows, fields] = await pool.query("SELECT *, arbeitszeit FROM kunden");
-            res.json({
-                data: rows
-            });
-        } catch (error) {
-            console.error(error);
-            res.json({
-                status: "error"
-            });
-        }
-    },
-    getById: async (req, res) => {
-        try {
-            const { id } = req.params;
-            const [rows, fields] = await pool.query("SELECT *, arbeitszeit FROM kunden WHERE id = ?", [id]);
-            res.json({
-                data: rows
-            });
-        } catch (error) {
-            console.error(error);
-            res.json({
-                status: "error"
-            });
-        }
-    },
+    // Die restlichen Controller-Methoden hier...
+
     create: async (req, res) => {
         try {
             const {
@@ -121,114 +96,9 @@ const kundenController = {
             res.status(500).json({ error: "Fehler beim Erstellen des Kunden." });
         }
     },
-    update: async (req, res) => {
-        try {
-            const {
-                vorname,
-                nachname,
-                strasseHausnummer,
-                postleitzahl,
-                ort,
-                email,
-                telefon,
-                mobil,
-                geschlecht,
-                auftragsTyp,
-                auftragsBeschreibung,
-                arbeitszeit,
-                budget,
-                zweck,
-                speicherkapazität,
-                ram,
-                kühlung,
-                gehäuse,
-                rechnungGestellt,
-                rechnungBezahlt
-            } = req.body;
 
-            const { id } = req.params;
+    // Die restlichen Controller-Methoden hier...
 
-            const sql = `
-                UPDATE kunden 
-                SET 
-                    vorname = ?, 
-                    nachname = ?, 
-                    strasseHausnummer = ?, 
-                    postleitzahl = ?, 
-                    ort = ?, 
-                    email = ?, 
-                    telefon = ?, 
-                    mobil = ?, 
-                    geschlecht = ?, 
-                    auftragsTyp = ?, 
-                    auftragsBeschreibung = ?,
-                    arbeitszeit = ?,
-                    budget = ?,
-                    zweck = ?,
-                    speicherkapazität = ?,
-                    ram = ?,
-                    kühlung = ?,
-                    gehäuse = ?,
-                    rechnungGestellt = ?,
-                    rechnungBezahlt = ?
-                WHERE 
-                    id = ?
-            `;
-
-            const values = [
-                vorname,
-                nachname,
-                strasseHausnummer,
-                postleitzahl,
-                ort,
-                email,
-                telefon,
-                mobil,
-                geschlecht,
-                auftragsTyp,
-                JSON.stringify(auftragsBeschreibung),
-                JSON.stringify(arbeitszeit),
-                budget,
-                zweck,
-                speicherkapazität,
-                ram,
-                kühlung,
-                gehäuse,
-                rechnungGestellt,
-                rechnungBezahlt,
-                id
-            ];
-
-            await pool.query(sql, values);
-
-            res.json({
-                status: "success",
-                message: "Eintrag erfolgreich aktualisiert"
-            });
-        } catch (error) {
-            console.error(error);
-            res.json({
-                status: "error",
-                message: "Eintrag konnte nicht aktualisiert werden"
-            });
-        }
-    },
-    delete: async (req, res) => {
-        try {
-            const { id } = req.params;
-            await pool.query("DELETE FROM kunden WHERE id = ?", [id]);
-            res.json({
-                status: "success",
-                message: "Eintrag erfolgreich gelöscht"
-            });
-        } catch (error) {
-            console.error(error);
-            res.json({
-                status: "error",
-                message: "Eintrag konnte nicht gelöscht werden"
-            });
-        }
-    }
 };
 
 // Funktion zur Generierung einer zufälligen Kundennummer
@@ -238,10 +108,12 @@ function generateRandomKundennummer() {
 
 async function sendEmail(vorname, nachname, email, auftragsBeschreibung, arbeitszeit) {
     const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        host: 'smtp.gmail.com', // Host des SMTP-Servers hier
+        port: 587, // Port des SMTP-Servers hier
+        secure: false, // true für Port 465, false für andere Ports
         auth: {
             user: 'tbs.digital.solutions@gmail.com', // Ihre E-Mail-Adresse hier
-            pass: 'your-email-password' // Ihr E-Mail-Passwort hier
+            pass: 'OstermundigenTB' // Ihr E-Mail-Passwort hier
         }
     });
 
