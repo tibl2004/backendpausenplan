@@ -1,4 +1,4 @@
-// controllers/ticket.controller.js
+
 const pool = require("../database");
 
 const ticketController = {
