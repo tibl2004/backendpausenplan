@@ -2,7 +2,33 @@ const nodemailer = require('nodemailer');
 const pool = require("../database/index");
 
 const kundenController = {
-    // Die restlichen Controller-Methoden hier...
+    getAll: async (req, res) => {
+        try {
+            const [rows, fields] = await pool.query("SELECT * FROM kunden");
+            res.json({
+                data: rows
+            });
+        } catch (error) {
+            console.error(error);
+            res.json({
+                status: "error"
+            });
+        }
+    },
+    getById: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const [rows, fields] = await pool.query("SELECT * FROM kunden WHERE id = ?", [id]);
+            res.json({
+                data: rows
+            });
+        } catch (error) {
+            console.error(error);
+            res.json({
+                status: "error"
+            });
+        }
+    },
 
     create: async (req, res) => {
         try {
@@ -97,7 +123,117 @@ const kundenController = {
         }
     },
 
-    // Die restlichen Controller-Methoden hier...
+    update: async (req, res) => {
+        try {
+            const {
+                vorname,
+                nachname,
+                strasseHausnummer,
+                postleitzahl,
+                ort,
+                email,
+                telefon,
+                mobil,
+                geschlecht,
+                auftragsTyp,
+                auftragsBeschreibung,
+                arbeitszeit,
+                budget,
+                zweck,
+                speicherkapazität,
+                ram,
+                kühlung,
+                gehäuse,
+                rechnungGestellt,
+                rechnungBezahlt
+            } = req.body;
+
+            const { id } = req.params;
+
+            const auftragsBeschreibungText = JSON.stringify(auftragsBeschreibung);
+            const arbeitszeitText = JSON.stringify(arbeitszeit);
+
+            const sql = `
+                UPDATE kunden 
+                SET 
+                    vorname = ?, 
+                    nachname = ?, 
+                    strasseHausnummer = ?, 
+                    postleitzahl = ?, 
+                    ort = ?, 
+                    email = ?, 
+                    telefon = ?, 
+                    mobil = ?, 
+                    geschlecht = ?, 
+                    auftragsTyp = ?, 
+                    auftragsBeschreibung = ?, 
+                    arbeitszeit = ?, 
+                    budget = ?, 
+                    zweck = ?, 
+                    speicherkapazität = ?, 
+                    ram = ?, 
+                    kühlung = ?, 
+                    gehäuse = ?, 
+                    rechnungGestellt = ?, 
+                    rechnungBezahlt = ?
+                WHERE 
+                    id = ?
+            `;
+
+            const values = [
+                vorname,
+                nachname,
+                strasseHausnummer,
+                postleitzahl,
+                ort,
+                email,
+                telefon,
+                mobil,
+                geschlecht,
+                auftragsTyp,
+                auftragsBeschreibungText,
+                arbeitszeitText,
+                budget,
+                zweck,
+                speicherkapazität,
+                ram,
+                kühlung,
+                gehäuse,
+                rechnungGestellt,
+                rechnungBezahlt,
+                id
+            ];
+
+            await pool.query(sql, values);
+
+            res.json({
+                status: "success",
+                message: "Kunde erfolgreich aktualisiert."
+            });
+        } catch (error) {
+            console.error(error);
+            res.json({
+                status: "error",
+                message: "Eintrag konnte nicht aktualisiert werden."
+            });
+        }
+    },
+    delete: async (req, res) => {
+        try {
+            const { id } = req.params;
+            await pool.query("DELETE FROM kunden WHERE id = ?", [id]);
+            res.json({
+                status: "success",
+                message: "Kunde erfolgreich gelöscht."
+            });
+        } catch (error) {
+            console.error(error);
+            res.json({
+                status: "error",
+                message: "Eintrag konnte nicht gelöscht werden."
+            });
+        }
+    }
 
 };
 
