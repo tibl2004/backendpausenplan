@@ -1,10 +1,10 @@
 const nodemailer = require('nodemailer');
 const pool = require("../database/index");
 
-const kundenController = {
+const PausenController = {
     getAll: async (req, res) => {
         try {
-            const [rows, fields] = await pool.query("SELECT * FROM kunden");
+            const [rows, fields] = await pool.query("SELECT * FROM mitarbeiterpausen");
             res.json({
                 data: rows
             });
@@ -237,40 +237,6 @@ const kundenController = {
 
 };
 
-// Funktion zur Generierung einer zufälligen Kundennummer
-function generateRandomKundennummer() {
-    return Math.floor(Math.random() * 1000000) + 1;
-}
 
-async function sendEmail(vorname, nachname, email, auftragsBeschreibung, arbeitszeit) {
-    const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com', // Host des SMTP-Servers hier
-        port: 587, // Port des SMTP-Servers hier
-        secure: false, // true für Port 465, false für andere Ports
-        auth: {
-            user: 'tbs.digital.solutions@gmail.com', // Ihre E-Mail-Adresse hier
-            pass: 'OstermundigenTB' // Ihr E-Mail-Passwort hier
-        }
-    });
 
-    const mailOptions = {
-        from: 'service@tb-innovations.com',
-        to: 'tbs.digital.solutions@gmail.com',
-        subject: 'Neue Anfrage von Ihrem Kontaktformular',
-        text: `
-            Vorname: ${vorname}\n
-            Nachname: ${nachname}\n
-            Email: ${email}\n
-            Auftragsbeschreibung: ${auftragsBeschreibung}\n
-            Arbeitszeit: ${arbeitszeit}
-        `
-    };
-
-    try {
-        await transporter.sendMail(mailOptions);
-    } catch (error) {
-        console.error('Fehler beim Senden der E-Mail:', error);
-    }
-}
-
-module.exports = kundenController;
+module.exports = PausenController;

@@ -1,21 +1,16 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const cron = require('node-cron');
-const pool = require('./database');
 require('dotenv').config();
 
 app.use(cors()); // CORS-Middleware aktivieren
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-const kundenRouter = require('./routes/kunden.router');
-const mitarbeiterRouter = require('./routes/mitarbeiter.router');
-const authRouter = require('./routes/auth.router');
+const PausenRouter = require('./routes/pausen.router');
 
-app.use('/api/kunden', kundenRouter);
-app.use('/api/mitarbeiter', mitarbeiterRouter);
-app.use('/api/auth', authRouter);
+
+app.use('/mitarbeiterpausen', PausenRouter);
 
 const PORT = process.env.PORT || 5000;
 
