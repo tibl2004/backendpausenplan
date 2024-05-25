@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+
 const pool = require("../database/index");
 
 const PausenController = {
@@ -18,7 +18,7 @@ const PausenController = {
     getById: async (req, res) => {
         try {
             const { id } = req.params;
-            const [rows, fields] = await pool.query("SELECT * FROM kunden WHERE id = ?", [id]);
+            const [rows, fields] = await pool.query("SELECT * FROM mitarbeiterpausen WHERE id = ?", [id]);
             res.json({
                 data: rows
             });
@@ -33,174 +33,98 @@ const PausenController = {
     create: async (req, res) => {
         try {
             const {
-                vorname,
-                nachname,
-                strasseHausnummer,
-                postleitzahl,
-                ort,
-                email,
-                telefon,
-                mobil,
-                geschlecht,
-                auftragsTyp,
-                auftragsBeschreibung,
-                arbeitszeit,
-                budget,
-                zweck,
-                speicherkapazität,
-                ram,
-                kühlung,
-                gehäuse,
-                rechnungGestellt,
-                rechnungBezahlt
+                name,
+                morning,
+                middayOption,
+                midday,
+                middayFrom,
+                middayTo,
+                afternoon,
+                termineFrom,
+                termineTo,
+                termineDescription
             } = req.body;
 
-            const kundennummer = generateRandomKundennummer();
-
-            // Umwandlung der JSON-Daten in Text
-            const auftragsBeschreibungText = JSON.stringify(auftragsBeschreibung);
-            const arbeitszeitText = JSON.stringify(arbeitszeit);
-
             const sql = `
-                INSERT INTO kunden (
-                    kundennummer,
-                    vorname, 
-                    nachname, 
-                    strasseHausnummer, 
-                    postleitzahl, 
-                    ort, 
-                    email, 
-                    telefon, 
-                    mobil, 
-                    geschlecht,
-                    auftragsTyp,
-                    auftragsBeschreibung,
-                    arbeitszeit,
-                    budget,
-                    zweck,
-                    speicherkapazität,
-                    ram,
-                    kühlung,
-                    gehäuse,
-                    rechnungGestellt,
-                    rechnungBezahlt
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO mitarbeiterpausen (
+                    name,
+                    morning,
+                    middayOption,
+                    midday,
+                    middayFrom,
+                    middayTo,
+                    afternoon,
+                    termineFrom,
+                    termineTo,
+                    termineDescription
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `;
-
             const values = [
-                kundennummer,
-                vorname,
-                nachname,
-                strasseHausnummer,
-                postleitzahl,
-                ort,
-                email,
-                telefon,
-                mobil,
-                geschlecht,
-                auftragsTyp,
-                auftragsBeschreibungText, // Hier wird der umgewandelte Text verwendet
-                arbeitszeitText, // Hier wird der umgewandelte Text verwendet
-                budget,
-                zweck,
-                speicherkapazität,
-                ram,
-                kühlung,
-                gehäuse,
-                rechnungGestellt,
-                rechnungBezahlt
+                name,
+                morning,
+                middayOption,
+                midday,
+                middayFrom,
+                middayTo,
+                afternoon,
+                termineFrom,
+                termineTo,
+                termineDescription
             ];
 
             await pool.query(sql, values);
 
-            // Senden der E-Mail
-            await sendEmail(vorname, nachname, email, auftragsBeschreibung, arbeitszeit);
-
-            res.status(201).json({ message: "Kunde erfolgreich erstellt." });
+            res.status(201).json({ message: "Daten erfolgreich erstellt und in die Datenbank gespeichert." });
         } catch (error) {
-            console.error("Fehler beim Erstellen des Kunden:", error);
-            res.status(500).json({ error: "Fehler beim Erstellen des Kunden." });
+            console.error("Fehler beim Erstellen der Daten:", error);
+            res.status(500).json({ error: "Fehler beim Erstellen der Daten und Speichern in der Datenbank." });
         }
     },
 
     update: async (req, res) => {
         try {
             const {
-                vorname,
-                nachname,
-                strasseHausnummer,
-                postleitzahl,
-                ort,
-                email,
-                telefon,
-                mobil,
-                geschlecht,
-                auftragsTyp,
-                auftragsBeschreibung,
-                arbeitszeit,
-                budget,
-                zweck,
-                speicherkapazität,
-                ram,
-                kühlung,
-                gehäuse,
-                rechnungGestellt,
-                rechnungBezahlt
+                name,
+                morning,
+                middayOption,
+                midday,
+                middayFrom,
+                middayTo,
+                afternoon,
+                termineFrom,
+                termineTo,
+                termineDescription
             } = req.body;
-
             const { id } = req.params;
 
-            const auftragsBeschreibungText = JSON.stringify(auftragsBeschreibung);
-            const arbeitszeitText = JSON.stringify(arbeitszeit);
-
             const sql = `
-                UPDATE kunden 
+                UPDATE mitarbeiterpausen 
                 SET 
-                    vorname = ?, 
-                    nachname = ?, 
-                    strasseHausnummer = ?, 
-                    postleitzahl = ?, 
-                    ort = ?, 
-                    email = ?, 
-                    telefon = ?, 
-                    mobil = ?, 
-                    geschlecht = ?, 
-                    auftragsTyp = ?, 
-                    auftragsBeschreibung = ?, 
-                    arbeitszeit = ?, 
-                    budget = ?, 
-                    zweck = ?, 
-                    speicherkapazität = ?, 
-                    ram = ?, 
-                    kühlung = ?, 
-                    gehäuse = ?, 
-                    rechnungGestellt = ?, 
-                    rechnungBezahlt = ?
+                    name = ?,
+                    morning = ?,
+                    middayOption = ?,
+                    midday = ?,
+                    middayFrom = ?,
+                    middayTo = ?,
+                    afternoon = ?,
+                    termineFrom = ?,
+                    termineTo = ?,
+                    termineDescription = ?
                 WHERE 
                     id = ?
             `;
 
             const values = [
-                vorname,
-                nachname,
-                strasseHausnummer,
-                postleitzahl,
-                ort,
-                email,
-                telefon,
-                mobil,
-                geschlecht,
-                auftragsTyp,
-                auftragsBeschreibungText,
-                arbeitszeitText,
-                budget,
-                zweck,
-                speicherkapazität,
-                ram,
-                kühlung,
-                gehäuse,
-                rechnungGestellt,
-                rechnungBezahlt,
+                name,
+                morning,
+                middayOption,
+                midday,
+                middayFrom,
+                middayTo,
+                afternoon,
+                termineFrom,
+                termineTo,
+                termineDescription,
                 id
             ];
 
@@ -208,7 +132,7 @@ const PausenController = {
 
             res.json({
                 status: "success",
-                message: "Kunde erfolgreich aktualisiert."
+                message: "Daten erfolgreich aktualisiert."
             });
         } catch (error) {
             console.error(error);
@@ -218,13 +142,14 @@ const PausenController = {
             });
         }
     },
+
     delete: async (req, res) => {
         try {
             const { id } = req.params;
-            await pool.query("DELETE FROM kunden WHERE id = ?", [id]);
+            await pool.query("DELETE FROM mitarbeiterpausen WHERE id = ?", [id]);
             res.json({
                 status: "success",
-                message: "Kunde erfolgreich gelöscht."
+                message: "Daten erfolgreich gelöscht."
             });
         } catch (error) {
             console.error(error);
@@ -236,7 +161,5 @@ const PausenController = {
     }
 
 };
-
-
 
 module.exports = PausenController;
