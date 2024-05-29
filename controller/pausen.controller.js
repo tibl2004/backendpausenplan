@@ -1,4 +1,3 @@
-
 const pool = require("../database/index");
 
 const PausenController = {
@@ -10,7 +9,7 @@ const PausenController = {
             });
         } catch (error) {
             console.error(error);
-            res.json({
+            res.status(500).json({
                 status: "error"
             });
         }
@@ -24,7 +23,7 @@ const PausenController = {
             });
         } catch (error) {
             console.error(error);
-            res.json({
+            res.status(500).json({
                 status: "error"
             });
         }
@@ -32,47 +31,54 @@ const PausenController = {
 
     create: async (req, res) => {
         try {
-            const {
-                name,
-                morning,
-                middayOption,
-                midday,
-                middayFrom,
-                middayTo,
-                afternoon,
-                termineFrom,
-                termineTo,
-                termineDescription
-            } = req.body;
+            const schedules = req.body;
 
-            const sql = `
-                INSERT INTO mitarbeiterpausen (
-                    name,
-                    morning,
-                    middayOption,
-                    midday,
-                    middayFrom,
-                    middayTo,
-                    afternoon,
-                    termineFrom,
-                    termineTo,
-                    termineDescription
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `;
-            const values = [
-                name,
-                morning,
-                middayOption,
-                midday,
-                middayFrom,
-                middayTo,
-                afternoon,
-                termineFrom,
-                termineTo,
-                termineDescription
-            ];
+            // Assuming schedules is an array of schedules for different days
+            for (const schedule of schedules) {
+                for (const entry of schedule) {
+                    const {
+                        name,
+                        morning,
+                        middayOption,
+                        midday,
+                        middayFrom,
+                        middayTo,
+                        afternoon,
+                        termineFrom,
+                        termineTo,
+                        termineDescription
+                    } = entry;
 
-            await pool.query(sql, values);
+                    const sql = `
+                        INSERT INTO mitarbeiterpausen (
+                            name,
+                            morning,
+                            middayOption,
+                            midday,
+                            middayFrom,
+                            middayTo,
+                            afternoon,
+                            termineFrom,
+                            termineTo,
+                            termineDescription
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    `;
+                    const values = [
+                        name,
+                        morning,
+                        middayOption,
+                        midday,
+                        middayFrom,
+                        middayTo,
+                        afternoon,
+                        termineFrom,
+                        termineTo,
+                        termineDescription
+                    ];
+
+                    await pool.query(sql, values);
+                }
+            }
 
             res.status(201).json({ message: "Daten erfolgreich erstellt und in die Datenbank gespeichert." });
         } catch (error) {
@@ -136,7 +142,7 @@ const PausenController = {
             });
         } catch (error) {
             console.error(error);
-            res.json({
+            res.status(500).json({
                 status: "error",
                 message: "Eintrag konnte nicht aktualisiert werden."
             });
@@ -153,7 +159,7 @@ const PausenController = {
             });
         } catch (error) {
             console.error(error);
-            res.json({
+            res.status(500).json({
                 status: "error",
                 message: "Eintrag konnte nicht gelöscht werden."
             });
