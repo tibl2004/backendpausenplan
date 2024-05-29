@@ -1,3 +1,5 @@
+// controller/pausen.controller.js
+
 const pool = require("../database/index");
 
 const PausenController = {
@@ -14,6 +16,7 @@ const PausenController = {
             });
         }
     },
+
     getById: async (req, res) => {
         try {
             const { id } = req.params;
@@ -33,8 +36,15 @@ const PausenController = {
         try {
             const schedules = req.body;
 
-            // Assuming schedules is an array of schedules for different days
             for (const schedule of schedules) {
+                const dayOfWeek = schedule[0].dayOfWeek;
+                const countQuery = "SELECT COUNT(*) AS count FROM mitarbeiterpausen WHERE dayOfWeek = ?";
+                const [countResult] = await pool.query(countQuery, [dayOfWeek]);
+                const count = countResult[0].count;
+                if (count + schedule.length > 16) {
+                    return res.status(400).json({ error: "Es können maximal 16 Mitarbeiter pro Tag hinzugefügt werden." });
+                }
+
                 for (const entry of schedule) {
                     const {
                         name,
@@ -60,8 +70,9 @@ const PausenController = {
                             afternoon,
                             termineFrom,
                             termineTo,
-                            termineDescription
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            termineDescription,
+                            dayOfWeek
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     `;
                     const values = [
                         name,
@@ -73,7 +84,8 @@ const PausenController = {
                         afternoon,
                         termineFrom,
                         termineTo,
-                        termineDescription
+                        termineDescription,
+                        dayOfWeek
                     ];
 
                     await pool.query(sql, values);
@@ -90,6 +102,7 @@ const PausenController = {
     update: async (req, res) => {
         try {
             const {
+                id,
                 name,
                 morning,
                 middayOption,
@@ -99,9 +112,16 @@ const PausenController = {
                 afternoon,
                 termineFrom,
                 termineTo,
-                termineDescription
+                termineDescription,
+                dayOfWeek
             } = req.body;
-            const { id } = req.params;
+
+            const countQuery = "SELECT COUNT(*) AS count FROM mitarbeiterpausen WHERE dayOfWeek = ? AND id != ?";
+            const [countResult] = await pool.query(countQuery, [dayOfWeek, id]);
+            const count = countResult[0].count;
+            if (count >= 16) {
+                return res.status(400).json({ error: "Es können maximal 16 Mitarbeiter pro Tag hinzugefügt werden." });
+            }
 
             const sql = `
                 UPDATE mitarbeiterpausen 
@@ -115,7 +135,8 @@ const PausenController = {
                     afternoon = ?,
                     termineFrom = ?,
                     termineTo = ?,
-                    termineDescription = ?
+                    termineDescription = ?,
+                    dayOfWeek = ?
                 WHERE 
                     id = ?
             `;
@@ -131,6 +152,7 @@ const PausenController = {
                 termineFrom,
                 termineTo,
                 termineDescription,
+                dayOfWeek,
                 id
             ];
 
@@ -165,7 +187,6 @@ const PausenController = {
             });
         }
     }
-
 };
 
 module.exports = PausenController;
