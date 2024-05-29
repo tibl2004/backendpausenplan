@@ -1,5 +1,3 @@
-// controller/pausen.controller.js
-
 const pool = require("../database/index");
 
 const PausenController = {
@@ -51,8 +49,6 @@ const PausenController = {
                         morning,
                         middayOption,
                         midday,
-                        middayFrom,
-                        middayTo,
                         afternoon,
                         termineFrom,
                         termineTo,
@@ -65,22 +61,18 @@ const PausenController = {
                             morning,
                             middayOption,
                             midday,
-                            middayFrom,
-                            middayTo,
                             afternoon,
                             termineFrom,
                             termineTo,
                             termineDescription,
                             dayOfWeek
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                     `;
                     const values = [
                         name,
                         morning,
                         middayOption,
                         midday,
-                        middayFrom,
-                        middayTo,
                         afternoon,
                         termineFrom,
                         termineTo,
@@ -107,8 +99,6 @@ const PausenController = {
                 morning,
                 middayOption,
                 midday,
-                middayFrom,
-                middayTo,
                 afternoon,
                 termineFrom,
                 termineTo,
@@ -130,8 +120,6 @@ const PausenController = {
                     morning = ?,
                     middayOption = ?,
                     midday = ?,
-                    middayFrom = ?,
-                    middayTo = ?,
                     afternoon = ?,
                     termineFrom = ?,
                     termineTo = ?,
@@ -146,8 +134,6 @@ const PausenController = {
                 morning,
                 middayOption,
                 midday,
-                middayFrom,
-                middayTo,
                 afternoon,
                 termineFrom,
                 termineTo,
