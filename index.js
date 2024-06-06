@@ -11,7 +11,7 @@ app.use(express.json());
 
 const PausenRouter = require('./routes/pausen.router');
 
-app.use('/mitarbeiterpausen', PausenRouter);
+app.use('/api/mitarbeiterpausen', PausenRouter);
 
 const PORT = process.env.PORT || 5000;
 
